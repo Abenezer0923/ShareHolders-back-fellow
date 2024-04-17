@@ -15,6 +15,7 @@ router.use("/auth", auth_route);
 router.use("/newPayment", newPayment);
 router.use("/orderPayment", upload_route);
 router.use("/payment/telebirr/pay", paymentController.telebirr_pay);
+router.use("/payment/telebirr/notifier", paymentController.telebirr_notifier);
 router.use("/payment/telebirr/home", paymentController.home);
 
 

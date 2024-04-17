@@ -118,7 +118,7 @@ module.exports = {
 
     })
     dash_data.newPayment_Order = newPaymentOrders
-    //console.log(currentShareInfo);
+    console.log(currentShareInfo);
     dash_data.currentShareInfo = currentShareInfo;
     let shareTotal = await shareInfoModel.aggregate([
       {

@@ -6,17 +6,35 @@ const home = (req,res) => {
 
 const telebirr_pay = (req, res) => {
     try {
+
+  
+      const { amount } = req.body;
+
+      /**
+       * Author : Abenezer Getachew
+       * 
+       * Logic  : Saving Ordeer for online payments
+       * 
+       * Result : Get an order id and make it available for the payment data
+       */
+
+        const online_order = [];
+
+
+        // Getting the order id
+        const order_id = online_order._id;
+
         // Purposebalck Telebirr Integration API
         // const pbe_telebirr_api = process.env.PBE_TELEBIRR_API;
-        const tranx_id= "KAPS_5498787939276"; 
+        const tranx_id= "KCCM_" + order_id; 
 
-        const pbe_telebirr_api = "https://telebirr.purposeblacketh.com/";
+        const pbe_telebirr_api = "https://tele.purposeblacketh.com/";
         // const notify_url = process.env.KAPS_TELEBIRR_NOTIFY_URL;
     
         // Destructure the value
         // const { subject, amount, tranx_id } = req.body;
     
-        const return_url = "http://www.google.com/" + tranx_id;
+        const return_url = "https://shareholders.purposeblacketh.com/";
         // const new_data = {
         //   subject,
         //   amount,
@@ -26,7 +44,7 @@ const telebirr_pay = (req, res) => {
         
         const new_data = {
             subject:"share",
-            amount:12,
+            amount,
             tranx_id,
             return_url,
           };
@@ -49,15 +67,70 @@ const telebirr_pay = (req, res) => {
 }
 
 
-const telebirr_success = (req,res) => {
-    // Do telebirr  success logic here
-}
-
 const telebirr_notifier = (req,res) => {
+    console.log({notified:true})
     // Do telebirr notify logic here
+    console.log("Receiving Notification");
+    const data = req.body;
+    console.log({ incomingData: data });
+
+    // Process Saving The data (save payment Info)
+
+    const newPaymentData = {
+      transactionID: data.outTradeNo, // This should be a unique ID for the transaction
+      paymentGatewayResponse: { data },
+      amount: 1, // Example amount
+      currency: "ETB", // Example currency
+      paymentMethod: "Telebirr", // Example payment method
+      customerID: "customerId123", // Example customer ID
+      customerName: "John Doe", // Example customer name
+      emailAddress: "john.doe@example.com", // Example email address
+      orderID: data.outTradeNo, // Example order ID
+      productDetails: "", // Example product details
+      billingAddress: {
+        country: "Ethiopia",
+        postalCode: 1000,
+        city: "AA",
+        street: "Piassa",
+        /* Object containing billing address */
+      }, // Example billing address
+      shippingAddress: {
+        country: "Ethiopia",
+        postalCode: 1000,
+        city: "AA",
+        street: "Piassa",
+        /* Object containing shipping address  */
+      }, // Example shipping address
+      additionalMetadata: {
+        /* Additional metadata if needed */
+      }, // Example additional metadata
+    };
+    // Creating a new Payment document
+    Payment.create(newPaymentData)
+      .then((payment) => {
+        console.log("Payment created successfully:", payment);
+      })
+      .catch((error) => {
+        console.error("Error creating payment:", error);
+      });
+
+    /**
+     * Author : Abenezer Getachew
+     * 
+     * Logic  : Complete The payment
+     * 
+     * Result : Saving Neccessary Data 
+     * 
+     */
+
+
+      console.log({ abeni : "Finish the rest here" })
+
+
+
 }
 
 
 module.exports = {
-    telebirr_pay,home
+    telebirr_pay,home, telebirr_notifier
 }

@@ -8,6 +8,15 @@ const path = require("path");
 
 const multer = require('multer');
 
+const cloudinary = require('cloudinary').v2;
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'dfpupkulr',
+  api_key: '942434959977872',
+  api_secret: 'vcTEdx6KnC4nbtFLpIzfHR-yeqY'
+});
+
 
 // Multer configuration for file upload
 const storage = multer.diskStorage({
@@ -23,15 +32,29 @@ const upload = multer({ storage: storage }).single('image'); // 'image' should m
 
 // Function to handle image upload
 const uploadImage = (req, res, next) => {
-  upload(req, res, function (err) {
+  upload(req, res, async function (err) {
+    
     if (err instanceof multer.MulterError) {
       return res.status(500).json({ error: err.message });
     } else if (err) {
       
       return res.status(500).json({ error: err.message });
     }
-    
-    next();
+    console.log(req.file.path)
+    try {
+      const filePath = req.file.path;
+      const folder = "shareholder/bank_reciept";
+      const result = await cloudinary.uploader.upload(filePath, { folder: folder, quality: 70, });
+      
+      console.log({ result });
+
+      req.cloudinary_secure_url = result ? result.secure_url : '';
+      
+      next();
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      return res.status(500).json({ error: "Failed to upload image to Cloudinary" });
+    }
   });
 };
 
@@ -39,7 +62,7 @@ const uploadImage = (req, res, next) => {
 const addPaymentHistory = (req, res) => {
   // Retrieve necessary data from request body
   const { shareCatagory,acc_No, percentage, amount, paymentMethod, payment_id, amount_birr, shareHolder_id, paymentStatus } = req.body;
-
+  console.log({url:req.cloudinary_secure_url})
   // Create a new payment history object
   const newPaymentHistory = new PaymentOrder({
     acc_No:acc_No,
@@ -53,7 +76,7 @@ const addPaymentHistory = (req, res) => {
     shareCatagory: shareCatagory,
 
     // Add other fields as necessary
-    image: req.file.path || null // Path to the uploaded image file
+    image: req.cloudinary_secure_url || null // Path to the uploaded image file
   });
 
   // Save the new payment history record to the database
