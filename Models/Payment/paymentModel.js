@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+const shareInfoModel = require("../ShareHolders/shareInfoModel");
 var Schema = mongoose.Schema;
 
 var paymentSchema = new Schema({
@@ -6,7 +7,6 @@ var paymentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "shareHolder",
   },
-
   shareInfo: {
     type: Schema.Types.ObjectId,
     ref: "shareInfo",

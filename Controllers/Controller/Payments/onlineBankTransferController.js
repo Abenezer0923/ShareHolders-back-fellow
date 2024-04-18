@@ -1,9 +1,11 @@
 const onlinePaymentOrder = require("../../../Models/Payment/onlinePaymentOrder")
 
-const addPaymentHistory = (req, res) => {
+const addOnlinePayment = (req, res) => {
     // Retrieve necessary data from request body
     const { shareCatagory, percentage, amount, paymentMethod, payment_id, amount_birr, shareHolder_id, paymentStatus } = req.body;
-    console.log({url:req.cloudinary_secure_url})
+    
+    console.log("HIIIIIIIIIIIIIIIIADDD",  req.body)
+   
     // Create a new payment history object
     const newPaymentHistory = new onlinePaymentOrder({
       paidAmount: amount,
@@ -13,6 +15,7 @@ const addPaymentHistory = (req, res) => {
       paymentMethod: paymentMethod,
       shareHolder: shareHolder_id,
       paymentStatus:paymentStatus,
+      payment: payment_id,
       shareCatagory: shareCatagory,
     });
 
@@ -28,5 +31,5 @@ const addPaymentHistory = (req, res) => {
 };
 
 module.exports = {
-    addPaymentHistory
+    addOnlinePayment
 };
